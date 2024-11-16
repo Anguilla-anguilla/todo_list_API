@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <section id="todo-list" class="todo-section">
+    <h2>ToDo List</h2>
+    <form action="/add-todo" method="post">
+      <label for="todo-title">Title:</label>
+      <input type="text" id="todo-title" name="title" required>
+      <label for="todo-description">Description:</label>
+      <textarea id="todo-description" name="description" required></textarea>
+      <button type="submit">Add ToDo</button>
+    </form>
+    <ul id="todo-items">
+      <!-- Static ToDo items -->
+      <li>
+        <span>Task 1</span>
+        <button>Edit</button>
+        <button>Delete</button>
+      </li>
+      <li>
+        <span>Task 2</span>
+        <button>Edit</button>
+        <button>Delete</button>
+      </li>
+    </ul>
+  </section>
+{% endblock content %}
