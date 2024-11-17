@@ -6,6 +6,7 @@ from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from user.permissions import IsOwner
 from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.utils import extend_schema
 
 from .models import Todo
 from .serializers import TodoSerializer
@@ -15,14 +16,16 @@ class TodoAPIView(APIView):
     permission_classes = [IsAuthenticated, IsOwner]
     authentication_classes = [JWTAuthentication]
 
+    
     def get(self, request):
         todo = Todo.objects.filter(user=request.user.id)
         serializer = TodoSerializer(todo, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+    @extend_schema(request=TodoSerializer)
     def post(self, request):
         data = {
-            'task': request.data.get('task'),
+            'title': request.data.get('title'),
             'description': request.data.get('description'),
             'user': request.user.id
         }
