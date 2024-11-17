@@ -1,14 +1,19 @@
 from django.shortcuts import render
-from rest_framework import status, permissions
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.shortcuts import render
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from user.permissions import IsOwner
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Todo
 from .serializers import TodoSerializer
 
 
 class TodoAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwner]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         todo = Todo.objects.filter(user=request.user.id)
@@ -30,7 +35,8 @@ class TodoAPIView(APIView):
 
 
 class TodoDetailAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwner]
+    authentication_classes = [JWTAuthentication]
 
     def get_objects(self, todo_id, user_id):
         try:
@@ -56,7 +62,7 @@ class TodoDetailAPIView(APIView):
             'user': request.user.id
         }
         serializer = TodoSerializer(isinstance=todo_instance, 
-                                    data-data, partial=True)
+                                    data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
