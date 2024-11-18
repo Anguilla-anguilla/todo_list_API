@@ -1,8 +1,6 @@
-from django.shortcuts import render
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from user.permissions import IsOwner
 from rest_framework.permissions import IsAuthenticated
@@ -12,11 +10,19 @@ from .models import Todo
 from .serializers import TodoSerializer
 
 
+class TodoListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated, IsOwner]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = TodoSerializer
+
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user)
+
+
 class TodoAPIView(APIView):
     permission_classes = [IsAuthenticated, IsOwner]
     authentication_classes = [JWTAuthentication]
 
-    
     def get(self, request):
         todo = Todo.objects.filter(user=request.user.id)
         serializer = TodoSerializer(todo, many=True)
@@ -50,7 +56,7 @@ class TodoDetailAPIView(APIView):
     def get(self, request, todo_id):
         todo_instance = self.get_objects(todo_id, request.user.id)
         if not todo_instance:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = TodoSerializer(todo_instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -59,7 +65,7 @@ class TodoDetailAPIView(APIView):
     def put(self, request, todo_id):
         todo_instance = self.get_objects(todo_id, request.user.id)
         if not todo_instance:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_403_FORBIDDEN)
         data = {
             'title': request.data.get('title'),
             'description': request.data.get('description'),
@@ -75,7 +81,7 @@ class TodoDetailAPIView(APIView):
     def delete(self, request, todo_id):
         todo_instance = self.get_objects(todo_id, request.user.id)
         if not todo_instance:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_403_FORBIDDEN)
         todo_instance.delete()
         return Response(status=status.HTTP_200_OK)
     
