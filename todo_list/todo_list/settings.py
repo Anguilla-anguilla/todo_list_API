@@ -108,13 +108,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    #     'rest_framework.permissions.IsAdminUser',
-    # ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
      'rest_framework_simplejwt.authentication.JWTAuthentication',
-    #  'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
@@ -123,6 +118,18 @@ SIMPLE_JWT = {
     'AUTH_HEADERS_TYPES': ('JWT',),
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
+}
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user_create': 'account.serializers.CreateUserSerializer',
+        'current_user': 'accounts.serializers.CurrentUserSerializer', 
+    },
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SET_PASSWORD_RETYPE': True,
+    'PASWORD_RESET_CONFIRM_RETYPE': True,
+    'TOKRN_MODEL': None
 }
 
 # Internationalization

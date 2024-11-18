@@ -55,6 +55,7 @@ class TodoDetailAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     # update
+    @extend_schema(request=TodoSerializer)
     def put(self, request, todo_id):
         todo_instance = self.get_objects(todo_id, request.user.id)
         if not todo_instance:
@@ -64,7 +65,7 @@ class TodoDetailAPIView(APIView):
             'description': request.data.get('description'),
             'user': request.user.id
         }
-        serializer = TodoSerializer(isinstance=todo_instance, 
+        serializer = TodoSerializer(instance=todo_instance,
                                     data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
