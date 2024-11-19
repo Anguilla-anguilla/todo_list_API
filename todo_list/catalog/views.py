@@ -68,13 +68,18 @@ class TodoDetailAPIView(APIView):
         todo_instance = self.get_objects(todo_id, request.user.id)
         if not todo_instance:
             return Response(status=status.HTTP_403_FORBIDDEN)
-        data = {
-            'title': request.data.get('title'),
-            'description': request.data.get('description'),
-            'user': request.user.id
-        }
+
+        data = {'user': request.user.id}
+        if request.data.get('title'):
+            data['title'] = request.data.get('title')
+        if request.data.get('description'):
+            data['description'] = request.data.get('description')
+        if request.data.get('mark_done'):
+            data['mark_done'] = request.data.get('mark_done')
+
         serializer = TodoSerializer(instance=todo_instance,
-                                    data=data, partial=True)
+                                    data=data, partial=True,
+                                    context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
