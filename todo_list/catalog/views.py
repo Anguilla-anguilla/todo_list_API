@@ -8,12 +8,14 @@ from drf_spectacular.utils import extend_schema
 
 from .models import Todo
 from .serializers import TodoSerializer
+from .pagination import CustomPageNumberPagination
 
 
 class TodoListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsOwner]
     authentication_classes = [JWTAuthentication]
     serializer_class = TodoSerializer
+    pagination_class = CustomPageNumberPagination
 
     def get_queryset(self):
         return Todo.objects.filter(user=self.request.user)
@@ -27,7 +29,7 @@ class TodoAPIView(APIView):
         todo = Todo.objects.filter(user=request.user.id)
         serializer = TodoSerializer(todo, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     @extend_schema(request=TodoSerializer)
     def post(self, request):
         data = {
