@@ -15,7 +15,7 @@ This project is a simple Todo API built using Django Rest Framework (DRF). It al
 
    ```bash
    git clone https://github.com/Anguilla-anguilla/todo_list_API.git
-   cd your-repo
+   cd todo_list_API
    ```
 
 2. **Set up a virtual environment**:
