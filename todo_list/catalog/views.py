@@ -18,7 +18,13 @@ class TodoListView(generics.ListAPIView):
     pagination_class = CustomPageNumberPagination
 
     def get_queryset(self):
-        return Todo.objects.filter(user=self.request.user)
+        queryset = Todo.objects.filter(user=self.request.user)
+        mark_done = self.request.query_params.get('mark_done')
+
+        if mark_done is not None:
+            queryset = queryset.filter(mark_done=mark_done)
+        
+        return queryset
 
 
 class TodoAPIView(APIView):
@@ -84,11 +90,10 @@ class TodoDetailAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def delete(self, request, todo_id):
         todo_instance = self.get_objects(todo_id, request.user.id)
         if not todo_instance:
             return Response(status=status.HTTP_403_FORBIDDEN)
         todo_instance.delete()
         return Response(status=status.HTTP_200_OK)
-    
