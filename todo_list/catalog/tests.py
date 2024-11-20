@@ -18,7 +18,7 @@
 #                                         user=self.user)
         
 #     def test_get_todo(self):
-#         url = reverse('api/')
+#         url = reverse('api')
 #         response = self.client.get(url)
 #         todo_list = Todo.objects.filter(user=self.user)
 #         serializer = TodoSerializer(todo_list, mamy=True)
