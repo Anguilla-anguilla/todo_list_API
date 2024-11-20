@@ -1,4 +1,4 @@
-# Todo list API
+# Todo list API (Django Rest Framework)
 
 This project is a simple Todo API built using Django Rest Framework (DRF). It allows users to manage their todos, including creating, updating, and deleting. The API also includes user authentication using JWT tokens.
 
